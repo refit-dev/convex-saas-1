@@ -12,6 +12,7 @@ import { currencyValidator, intervalValidator, PLANS } from "@cvx/schema";
 import { api, internal } from "@cvx/_generated/api";
 import { SITE_URL, STRIPE_SECRET_KEY } from "@cvx/env";
 import { asyncMap } from "convex-helpers";
+import { getSubscriptionPeriodStart, getSubscriptionPeriodEnd } from './stripe-subscription-period';
 
 /**
  * TODO: Uncomment to require Stripe keys.
@@ -258,8 +259,8 @@ export const PREAUTH_createFreeStripeSubscription = internalAction({
       stripeSubscriptionId: stripeSubscription.id,
       status: stripeSubscription.status,
       interval: "year",
-      currentPeriodStart: stripeSubscription.current_period_start,
-      currentPeriodEnd: stripeSubscription.current_period_end,
+      currentPeriodStart: (getSubscriptionPeriodStart(stripeSubscription, (items) => items[0])),
+      currentPeriodEnd: (getSubscriptionPeriodEnd(stripeSubscription, (items) => items[0])),
       cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
     });
 
