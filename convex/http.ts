@@ -13,6 +13,7 @@ import {
 } from "@cvx/email/templates/subscriptionEmail";
 import Stripe from "stripe";
 import { Doc } from "@cvx/_generated/dataModel";
+import { getSubscriptionPeriodStart, getSubscriptionPeriodEnd } from './stripe-subscription-period';
 
 const http = httpRouter();
 
@@ -58,8 +59,8 @@ const handleUpdateSubscription = async (
       priceStripeId: subscriptionItem.price.id,
       interval: subscriptionItem.plan.interval as Interval,
       status: subscription.status,
-      currentPeriodStart: subscription.current_period_start,
-      currentPeriodEnd: subscription.current_period_end,
+      currentPeriodStart: (getSubscriptionPeriodStart(subscription, (items) => items[0])),
+      currentPeriodEnd: (getSubscriptionPeriodEnd(subscription, (items) => items[0])),
       cancelAtPeriodEnd: subscription.cancel_at_period_end,
     },
   });
